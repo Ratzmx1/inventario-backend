@@ -2,12 +2,11 @@ const pmsql = require("promise-mysql");
 
 const connect = () => {
   return pmsql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: "testinstance.c8k4acebsqsi.sa-east-1.rds.amazonaws.com",
+    user: "admin",
+    password: "12341234",
     port: 3306,
     database: "inventario",
-    charset: "utf8_general_ci",
   });
 };
 

@@ -72,17 +72,21 @@ router.get("/login", (req, res) => {
   @Status: 200
     description: Usuario ingresado correctamente, retorna un token utilizando JWT
     return:
-      status:200,
       {
-        message: // Mensaje aprovando el registro
+        status:200,
+        { 
+          message: // Mensaje aprovando el registro
+        }
       }
     
   @status: 500
     description: Error interno del servidor y/o base de datos
     return:
-      status:500,
-      {
-        message: // Mensaje de error enviado por node (Probablemente usuario ya ingresado)
+      { 
+        status:500,
+        {
+          message: // Mensaje de error enviado por node (Probablemente usuario ya ingresado)
+        }
       }
 */
 
