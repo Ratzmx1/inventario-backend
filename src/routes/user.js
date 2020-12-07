@@ -38,17 +38,22 @@ router.get("/login", (req, res) => {
   connect()
     .then((db) => {
       return db.query(
-        `SELECT nombre, password as password2 FROM USUARIOS WHERE RUT = ${rut}`,
+        `SELECT rut, email, nombres, apellidos, rol, estado, pass FROM usuario WHERE RUT = ${rut}`,
         []
       );
     })
     .then((result) => {
       if (result.length > 0) {
-        const { nombre, password2 } = result[0];
-        if (bcrypt.compareSync(password, password2)) {
-          const token = jwt.sign({ nombre }, "LaPrivateKeyEstaAki", {
-            expiresIn: 60 * 60 * 22, // 22 hrs
-          });
+        const { rut, email, nombres, apellidos, rol, estado, pass } = result[0];
+
+        if (bcrypt.compareSync(password, pass.trim())) {
+          const token = jwt.sign(
+            { rut, email, nombres, apellidos, rol, estado },
+            "LaPrivateKeyEstaAki",
+            {
+              expiresIn: 60 * 60 * 22, // 22 hrs
+            }
+          );
           res.json({ status: 200, body: { token } });
         } else {
           res.json({
@@ -91,17 +96,16 @@ router.get("/login", (req, res) => {
 */
 
 router.post("/singup", (req, res) => {
-  const { rut, password, name } = req.body;
-  const hash = bcrypt.hashSync(password, 2 * Math.round(Math.random * 100));
+  const { rut, email, pass, nombres, apellidos, rol } = req.body;
+  const hash = bcrypt.hashSync(pass, 8);
 
   connect()
     .then((db) => {
       return db.query(
-        `INSERT INTO USUARIOS VALUES (${rut},'${hash}','${name}')`
+        `INSERT INTO usuario VALUES (${rut}, '${email}', '${hash}', '${nombres}', '${apellidos}' , '${rol}', 'Activo' )`
       );
     })
     .then((result) => {
-      console.log(result);
       if (result.affectedRows > 0) {
         res.json({
           code: 200,
