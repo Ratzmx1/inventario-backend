@@ -7,93 +7,56 @@ const auth = require("../utils/auth");
 
 const router = express.Router();
 
-/*
-  @Status: 200
-    description: Usuario ingresado correctamente, retorna un token utilizando JWT
-    return:
-      status:200,
-      {
-        token: //JWT con la informacion y 22 horas de expiracion
-      }
-    
-  @Status: 404
-    description: Usuario no ingresado debido a que el usuario y/o contraseña estan incorrectas
-    return:
-      status:404,
-      {
-        message: // Mensaje de error
-      }
-  
-  @status: 500
-    description: Error interno del servidor y/o base de datos
-    return:
-      status:500,
-      {
-        message: // Mensaje de error enviado por node
-      }
-*/
-
 router.get("/login", (req, res) => {
-  const { rut, password } = req.body;
+  const { rut, pass } = req.body;
   connect()
     .then((db) => {
       return db.query(
-        `SELECT rut, email, nombres, apellidos, rol, estado, pass FROM usuario WHERE RUT = ${rut}`,
+        `SELECT rut, email, nombres, apellidos, rol, estado, pass as password FROM usuario WHERE RUT = ${rut}`,
         []
       );
     })
     .then((result) => {
       if (result.length > 0) {
-        const { rut, email, nombres, apellidos, rol, estado, pass } = result[0];
-
-        if (bcrypt.compareSync(password, pass.trim())) {
-          const token = jwt.sign(
-            { rut, email, nombres, apellidos, rol, estado },
-            "LaPrivateKeyEstaAki",
-            {
-              expiresIn: 60 * 60 * 22, // 22 hrs
-            }
-          );
-          res.json({ status: 200, body: { token } });
+        const {
+          rut,
+          email,
+          nombres,
+          apellidos,
+          rol,
+          estado,
+          password,
+        } = result[0];
+        const user = { rut, email, nombres, apellidos, rol, estado };
+        if (bcrypt.compareSync(pass.trim(), password)) {
+          const token = jwt.sign(user, "LaPrivateKeyEstaAki", {
+            expiresIn: 60 * 60 * 22, // 22 hrs
+          });
+          res.json({
+            status: 200,
+            message: "Usuario logeado correctamente",
+            data: { token, user },
+          });
         } else {
           res.json({
             status: 404,
-            body: { message: "Rut / Contraseña incorrectos" },
+            message: "Rut / Contraseña incorrectos",
+            data: {},
           });
         }
       } else {
-        res
-          .status(404)
-          .json({ code: 404, message: "Rut / Contraseña incorrectos" });
+        res.status(404).json({
+          code: 404,
+          message: "Rut / Contraseña incorrectos",
+          data: {},
+        });
       }
     })
     .catch((e) => {
       console.error(e);
-      res.status(500).json({ status: 500, body: { result: e.message } });
+      res.status(500).json({ status: 500, message: e.message, data: {} });
     });
 });
-
-/*
-  @Status: 200
-    description: Usuario ingresado correctamente, retorna un token utilizando JWT
-    return:
-      {
-        status:200,
-        { 
-          message: // Mensaje aprovando el registro
-        }
-      }
-    
-  @status: 500
-    description: Error interno del servidor y/o base de datos
-    return:
-      { 
-        status:500,
-        {
-          message: // Mensaje de error enviado por node (Probablemente usuario ya ingresado)
-        }
-      }
-*/
 
 router.post("/singup", (req, res) => {
   const { rut, email, pass, nombres, apellidos, rol } = req.body;
@@ -109,7 +72,8 @@ router.post("/singup", (req, res) => {
       if (result.affectedRows > 0) {
         res.json({
           code: 200,
-          body: { message: "Usuario registrado correctamente" },
+          message: "Usuario registrado correctamente",
+          data: {},
         });
       }
     })
@@ -117,7 +81,8 @@ router.post("/singup", (req, res) => {
       console.error(e);
       res.status(500).json({
         code: 500,
-        body: { result: e.message },
+        message: e.message,
+        data: {},
       });
     });
 });
