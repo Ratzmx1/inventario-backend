@@ -6,8 +6,6 @@ DROP TABLE producto;
 DROP TABLE subcategoria;
 DROP TABLE categoria;
 DROP TABLE proveedor;
-DROP TRIGGER ingreso;
-DROP TRIGGER retiro;
 
 
 CREATE TABLE usuario 
@@ -29,7 +27,7 @@ id_sub_cat int NOT NULL,
 stock int NOT NULL,
 marca varchar(20),
 stock_min int NOT NULL,
-CHECK (stock>0)
+CHECK (stock>=0)
 );
 
 CREATE TABLE proveedor
