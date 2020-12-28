@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const userRouter = require("./src/routes/user");
 const categoriesRouter = require("./src/routes/categories");
@@ -12,6 +13,7 @@ const app = express();
 const port = 3005;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use("/user", userRouter);
 app.use("/categories", categoriesRouter);

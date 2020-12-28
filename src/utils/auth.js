@@ -10,14 +10,14 @@ const auth = (req, res, next) => {
         return next();
       } else {
         return res
-          .status(403)
-          .json({ status: 403, body: { message: "Unauthorized" } });
+          .status(401)
+          .json({ status: 401, data: {}, message: "Unauthorized" });
       }
     });
   }
   return res
-    .status(403)
-    .json({ status: 403, body: { message: "Unauthorized" } });
+    .status(401)
+    .json({ status: 401, data: {}, message: "Unauthorized" });
 };
 
 module.exports = auth;
