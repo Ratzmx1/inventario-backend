@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/login", (req, res) => {
   const { rut, pass } = req.body;
   if (rut && pass) {
-    connect()
+    return connect()
       .then((db) => {
         return db.query(
           `SELECT rut, email, nombres, apellidos, rol, estado, pass as password FROM usuario WHERE RUT = ${rut}`,
@@ -70,7 +70,7 @@ router.post("/singup", (req, res) => {
   if (rut && email && pass && nombres && apellidos && rol) {
     const hash = bcrypt.hashSync(pass, 8);
 
-    connect()
+    return connect()
       .then((db) => {
         return db.query(
           `INSERT INTO usuario VALUES (${rut}, '${email}', '${hash}', '${nombres}', '${apellidos}' , '${rol}', 'Activo' )`
@@ -90,7 +90,7 @@ router.post("/singup", (req, res) => {
       })
       .catch((e) => {
         console.error(e);
-        res.status(500).json({
+        return res.status(500).json({
           code: 500,
           message: e.message,
           data: {},
