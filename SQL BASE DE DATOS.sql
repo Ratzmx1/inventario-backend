@@ -98,10 +98,9 @@ ALTER TABLE bajo_stock ADD CONSTRAINT fk_bajo_stock FOREIGN KEY(id_producto) REF
 CREATE TRIGGER ingreso
 	AFTER INSERT ON entrada
     FOR EACH ROW
-		UPDATE producto SET stock =+ 1 WHERE id = NEW.id_producto;
+		UPDATE producto SET stock = stock + NEW.cantidad WHERE id = NEW.id_producto;
 
 CREATE TRIGGER retiro
 	AFTER INSERT ON salida
     FOR EACH ROW
-		UPDATE producto SET stock =- 1 WHERE id = NEW.id_producto;
-
+		UPDATE producto SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
