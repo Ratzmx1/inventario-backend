@@ -46,7 +46,7 @@ orden int,
 cantidad int,
 id_producto int NOT NULL,
 id_proveedor int NOT NULL,
-fecha date
+fecha varchar(40)
 );
 
 CREATE TABLE salida
@@ -55,7 +55,7 @@ id int AUTO_INCREMENT NOT NULL UNIQUE,
 id_usuario int NOT NULL UNIQUE,
 id_producto int NOT NULL UNIQUE,
 cantidad int,
-fecha date
+fecha varchar(40)
 );
 
 CREATE TABLE subcategoria
@@ -104,3 +104,8 @@ CREATE TRIGGER retiro
 	AFTER INSERT ON salida
     FOR EACH ROW
 		UPDATE producto SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
+        
+INSERT INTO categoria (nombre) VALUES ("Electronica");
+INSERT INTO subcategoria (nombre, id_categoria) VALUES ("Laptop", 1);
+INSERT INTO producto (nombre, id_sub_cat, stock, marca, stock_min) VALUES ("Gato cojo", 1, 0, "chayomi", 10);
+INSERT INTO proveedor (nombre, direccion, telefono) VALUES ("Martuco", "Talca", 6969420);
