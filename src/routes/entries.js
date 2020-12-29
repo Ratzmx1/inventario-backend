@@ -38,4 +38,68 @@ router.post("/input", auth, (req, res) => {
   }
 });
 
+router.post("/ActualizarInput", auth, (req, res) => {
+  const { id, orden, cantidad, id_producto, id_proveedor } = req.body;
+  if (id && orden && cantidad && id_producto && id_proveedor) {
+    return connect()
+      .then((db) => {
+        return db.query(
+          `UPDATE entrada SET orden= ${orden}, cantidad = ${cantidad}, id_producto= ${id_producto}, id_proveedor= ${id_proveedor} where id = ${id}`
+        );
+      })
+      .then((result) => {
+        console.log(result);
+        if (result.affectedRows === 1) {
+          return res.json({
+            code: 200,
+            message: "Entrada actualizada correctamente",
+            data: {},
+          });
+        }
+        return res
+          .status(500)
+          .json({ code: 500, message: "Ocurrio un error", data: {} });
+      })
+      .catch((e) => {
+        console.error(e);
+        return res.status(500).json({
+          code: 500,
+          message: e.message,
+          data: {},
+        });
+      });
+  }
+});
+
+router.post("/EliminarInput", auth, (req, res) => {
+  const { id } = req.body;
+  if (id) {
+    return connect()
+      .then((db) => {
+        return db.query(`DELETE FROM entrada where id= ${id}`);
+      })
+      .then((result) => {
+        console.log(result);
+        if (result.affectedRows === 1) {
+          return res.json({
+            code: 200,
+            message: "Entrada eliminada correctamente",
+            data: {},
+          });
+        }
+        return res
+          .status(500)
+          .json({ code: 500, message: "Ocurrio un error", data: {} });
+      })
+      .catch((e) => {
+        console.error(e);
+        return res.status(500).json({
+          code: 500,
+          message: e.message,
+          data: {},
+        });
+      });
+  }
+});
+
 module.exports = router;
