@@ -46,7 +46,7 @@ orden int,
 cantidad int,
 id_producto int NOT NULL,
 id_proveedor int NOT NULL,
-fecha date
+fecha varchar(40)
 );
 
 CREATE TABLE salida
@@ -62,7 +62,7 @@ CREATE TABLE subcategoria
 (
 id int AUTO_INCREMENT NOT NULL UNIQUE,
 nombre varchar(20),
-id_categoria int NOT NULL UNIQUE
+id_categoria int NOT NULL
 );
 
 CREATE TABLE categoria
@@ -98,9 +98,14 @@ ALTER TABLE bajo_stock ADD CONSTRAINT fk_bajo_stock FOREIGN KEY(id_producto) REF
 CREATE TRIGGER ingreso
 	AFTER INSERT ON entrada
     FOR EACH ROW
-		UPDATE producto SET stock =+ 1 WHERE id = NEW.id_producto;
+		UPDATE producto SET stock = stock + NEW.cantidad WHERE id = NEW.id_producto;
 
 CREATE TRIGGER retiro
 	AFTER INSERT ON salida
     FOR EACH ROW
-		UPDATE producto SET stock =- 1 WHERE id = NEW.id_producto;
+		UPDATE producto SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
+        
+INSERT INTO categoria (nombre) VALUES ("Electronica");
+INSERT INTO subcategoria (nombre, id_categoria) VALUES ("Laptop", 1);
+INSERT INTO producto (nombre, id_sub_cat, stock, marca, stock_min) VALUES ("Gato cojo", 1, 0, "chayomi", 10);
+INSERT INTO proveedor (nombre, direccion, telefono) VALUES ("Martuco", "Talca", 6969420);

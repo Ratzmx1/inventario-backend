@@ -69,7 +69,6 @@ router.post("/singup", (req, res) => {
   const { rut, email, pass, nombres, apellidos, rol } = req.body;
   if (rut && email && pass && nombres && apellidos && rol) {
     const hash = bcrypt.hashSync(pass, 8);
-
     return connect()
       .then((db) => {
         return db.query(

@@ -1,26 +1,9 @@
 const express = require("express");
 const connect = require("../utils/connection");
+const auth = require("../utils/auth");
+const { restart } = require("nodemon");
 
 const router = express.Router();
-
-router.get("/productos",(req,res) => {
-
-    return connect().then((basedato) => {
-        return basedato.query(`SELECT * FROM producto`,[]);
-    }).then((resultados) => {
-        console.log(resultados);
-        if (resultados.length > 0) {
-            return res.status(200).json({status:200, data:resultados, message:"Los resultados de la tabla productos"});
-        }
-
-        return res.status(404).json({status:404, data:[], message:"No hay productos"});
-
-    });
-
-    return res
-    .status(400)
-    .json({ status: 400, message: "sakdljfasdlkfjas", data: {} });
-});
 
 router.get("/productos_salida",(req,res) => {
 
@@ -92,5 +75,40 @@ router.post("/sacar_producto", (req,res) => {
 
 
 
+
+router.post("/agregar", auth, (req, res) => {
+  const { nombre, id_sub_cat, marca, stock, stock_min } = req.body;
+  console.log(req.body);
+  //if (nombre && id_sub_cat && marca && stock && stock_min) {
+  return connect()
+    .then((db) => {
+      return db.query(
+        `INSERT INTO producto (nombre, id_sub_cat, stock, marca, stock_min) VALUES ('${nombre}', ${id_sub_cat}, ${stock}, '${marca}', ${stock_min} )`,
+        []
+      );
+    })
+    .then((result) => {
+      if (result.affectedRows === 1) {
+        return res.json({
+          code: 200,
+          message: "Producto Ingresado Correctamente",
+          data: {},
+        });
+      }
+      return res
+        .status(500)
+        .json({ code: 500, message: "Ocurrio un error", data: {} });
+
+      console.log(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      return res
+        .status(500)
+        .json({ status: 500, message: e.message, data: {} });
+    });
+  // }
+  res.json({});
+});
 
 module.exports = router;
