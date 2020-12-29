@@ -52,10 +52,10 @@ fecha date
 CREATE TABLE salida
 (
 id int AUTO_INCREMENT NOT NULL UNIQUE,
-id_usuario int NOT NULL UNIQUE,
-id_producto int NOT NULL UNIQUE,
-cantidad int,
-fecha date
+id_usuario int NOT NULL,
+id_producto int NOT NULL,
+fecha DATETIME NOT NULL,
+cantidad int
 );
 
 CREATE TABLE subcategoria
@@ -104,4 +104,3 @@ CREATE TRIGGER retiro
 	AFTER INSERT ON salida
     FOR EACH ROW
 		UPDATE producto SET stock =- 1 WHERE id = NEW.id_producto;
-
