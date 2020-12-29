@@ -52,8 +52,8 @@ fecha varchar(40)
 CREATE TABLE salida
 (
 id int AUTO_INCREMENT NOT NULL UNIQUE,
-id_usuario int NOT NULL UNIQUE,
-id_producto int NOT NULL UNIQUE,
+id_usuario int NOT NULL ,
+id_producto int NOT NULL ,
 cantidad int,
 fecha varchar(40)
 );
@@ -62,7 +62,7 @@ CREATE TABLE subcategoria
 (
 id int AUTO_INCREMENT NOT NULL UNIQUE,
 nombre varchar(20),
-id_categoria int NOT NULL UNIQUE
+id_categoria int NOT NULL
 );
 
 CREATE TABLE categoria
