@@ -42,7 +42,11 @@ router.get("/view", auth, (res) => {
   return connect()
     .then((db) => {
       return db.query(
-        `SELECT * FROM entrada`
+        `SELECT e.*, prod.nombre AS "nombre_prod", prov.nombre AS "nombre_prov", u.nombres AS "nombre_user"
+        FROM entrada AS e
+        INNER JOIN producto AS prod ON e.id_producto = prod.id
+        INNER JOIN proveedor AS prov ON e.id_proveedor = prov.id
+        INNER JOIN usuario AS u ON e.id_usuario = u.rut;`
       );
     })
     .then((result) => {

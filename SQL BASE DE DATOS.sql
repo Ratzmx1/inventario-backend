@@ -109,3 +109,4 @@ INSERT INTO categoria (nombre) VALUES ("Electronica");
 INSERT INTO subcategoria (nombre, id_categoria) VALUES ("Laptop", 1);
 INSERT INTO producto (nombre, id_sub_cat, stock, marca, stock_min) VALUES ("Gato cojo", 1, 0, "chayomi", 10);
 INSERT INTO proveedor (nombre, direccion, telefono) VALUES ("Martuco", "Talca", 6969420);
+INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha) VALUES (1, 16, 69, 1, 1, "29/12/2020");
