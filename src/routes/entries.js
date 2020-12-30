@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.post("/input", auth, (req, res) => {
   const { orden, cantidad, id_producto, id_proveedor, fecha } = req.body;
-  if (orden && cantidad && id_producto && id_proveedor) {
+  if (orden && cantidad && id_producto && id_proveedor && fecha) {
     return connect()
       .then((db) => {
         return db.query(
-          `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor)
-          VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor})`
+          `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha)
+          VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor}, '${fecha}')`
         );
       })
       .then((result) => {

@@ -12,13 +12,11 @@ router.get("/productos_salida", (req, res) => {
     })
     .then((resultados) => {
       if (resultados.length > 0) {
-        return res
-          .status(200)
-          .json({
-            status: 200,
-            data: resultados,
-            message: "El producto a salido exitosamente",
-          });
+        return res.status(200).json({
+          status: 200,
+          data: resultados,
+          message: "El producto a salido exitosamente",
+        });
       }
 
       return res
@@ -26,22 +24,18 @@ router.get("/productos_salida", (req, res) => {
         .json({ status: 404, data: [], message: "No hay productos" });
     })
     .catch((error) => {
-      return res
-        .status(500)
-        .json({
-          status: 500,
-          message: "Error del servidor, intentelo más tarde",
-          data: { error: error.message },
-        });
+      return res.status(500).json({
+        status: 500,
+        message: "Error del servidor, intentelo más tarde",
+        data: { error: error.message },
+      });
     });
 
-  return res
-    .status(400)
-    .json({
-      status: 400,
-      message: "Petición incorrecta, intentelo nuevamente",
-      data: {},
-    });
+  return res.status(400).json({
+    status: 400,
+    message: "Petición incorrecta, intentelo nuevamente",
+    data: {},
+  });
 });
 
 router.post("/sacar_producto", (req, res) => {
@@ -89,21 +83,17 @@ router.post("/sacar_producto", (req, res) => {
               });
             })
             .catch((e) => {
-              return res
-                .status(500)
-                .json({
-                  mensaje: "Ha ocurrido un error en la inserción",
-                  data: null,
-                  error: e.message,
-                });
+              return res.status(500).json({
+                mensaje: "Ha ocurrido un error en la inserción",
+                data: null,
+                error: e.message,
+              });
             });
         } else {
-          return res
-            .status(404)
-            .json({
-              mensaje: "Cantidad del producto en bodega es insuficiente",
-              data: null,
-            });
+          return res.status(404).json({
+            mensaje: "Cantidad del producto en bodega es insuficiente",
+            data: null,
+          });
         }
 
         console.log(resultados[0].stock);
