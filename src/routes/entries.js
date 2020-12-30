@@ -38,7 +38,7 @@ router.post("/input", auth, (req, res) => {
   }
 });
 
-router.get("/view", auth, (res) => {
+router.get("/view", auth, (req, res) => {
   return connect()
     .then((db) => {
       return db.query(
@@ -55,7 +55,7 @@ router.get("/view", auth, (res) => {
         return res.json({
           code: 200,
           message: "Lista de entradas mostrada exitosamente",
-          data: {},
+          data: {result},
         });
       }
       return res
