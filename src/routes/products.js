@@ -142,4 +142,38 @@ router.post("/agregar", auth, (req, res) => {
   res.json({});
 });
 
+// LISTADO DE PRODUCTOS 
+
+router.get("/view", auth, (req, res) => {
+  return connect()
+    .then((db) => {
+      return db.query(
+        `SELECT producto.id AS "id_prod", producto.nombre AS "nombre_prod", subcategoria.nombre AS "nombre_subc",
+        producto.stock AS "stock_prod",producto.marca AS "marca_prod", producto.sotck_min AS "stock_min_prod"
+        FROM producto INNER JOIN subcategoria ON producto.id_sub_cat= subcategoria.id;`
+      );
+    })
+    .then((result) => {
+      console.log(result);
+      if (result.length > 0) {
+        return res.json({
+          code: 200,
+          message: "Lista de productos mostrada exitosamente",
+          data: { result },
+        });
+      }
+      return res
+        .status(500)
+        .json({ code: 500, message: "Ocurrio un error", data: {} });
+    })
+    .catch((e) => {
+      console.error(e);
+      return res.status(500).json({
+        code: 500,
+        message: e.message,
+        data: {},
+      });
+    });
+});
+
 module.exports = router;
