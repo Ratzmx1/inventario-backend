@@ -38,6 +38,36 @@ router.post("/input", auth, (req, res) => {
   }
 });
 
+router.get("/view", auth, (res) => {
+  return connect()
+    .then((db) => {
+      return db.query(
+        `SELECT * FROM entrada`
+      );
+    })
+    .then((result) => {
+      console.log(result);
+      if (result.length > 0) {
+        return res.json({
+          code: 200,
+          message: "Lista de entradas mostrada exitosamente",
+          data: {},
+        });
+      }
+      return res
+        .status(500)
+        .json({ code: 500, message: "Ocurrio un error", data: {}});
+    })
+    .catch((e) => {
+      console.error(e);
+      return res.status(500).json({
+        code: 500,
+        message: e.message,
+        data: {},
+      });
+    });
+});
+
 router.post("/ActualizarInput", auth, (req, res) => {
   const { id, orden, cantidad, id_producto, id_proveedor } = req.body;
   if (id && orden && cantidad && id_producto && id_proveedor) {
