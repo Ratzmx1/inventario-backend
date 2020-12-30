@@ -8,7 +8,8 @@ const router = express.Router();
 router.get("/productos_salida", (req, res) => {
   return connect()
     .then((basedato) => {
-      return basedato.query(`SELECT * FROM salida`, []);
+      return basedato.query(`SELECT s.id, s.cantidad, s.fecha, p.nombre, u.rut, u.nombres, u.apellidos
+      FROM  salida s inner join producto p on s.id_producto = p.id inner join usuario u on s.id_usuario = u.rut`, []);
     })
     .then((resultados) => {
       if (resultados.length > 0) {
