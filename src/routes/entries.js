@@ -55,12 +55,12 @@ router.get("/view", auth, (req, res) => {
         return res.json({
           code: 200,
           message: "Lista de entradas mostrada exitosamente",
-          data: {result},
+          data: { result },
         });
       }
       return res
         .status(500)
-        .json({ code: 500, message: "Ocurrio un error", data: {}});
+        .json({ code: 500, message: "Ocurrio un error", data: {} });
     })
     .catch((e) => {
       console.error(e);
