@@ -106,6 +106,28 @@ CREATE TRIGGER retiro
 	AFTER INSERT ON salida
     FOR EACH ROW
 		UPDATE producto SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
+		
+CREATE TRIGGER cambio_ingreso
+	AFTER UPDATE ON entrada
+    FOR EACH ROW
+		UPDATE producto SET stock = stock - OLD.cantidad WHERE id = NEW.id_producto;
+		UPDATE producto SET stock = stock + NEW.cantidad WHERE id = NEW.id_producto;
+
+CREATE TRIGGER cambio_retiro
+	AFTER UPDATE ON salida
+    FOR EACH ROW
+		UPDATE producto SET stock = stock + OLD.cantidad WHERE id = NEW.id_producto;
+		UPDATE producto SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
+
+CREATE TRIGGER eliminar_ingreso
+	AFTER DELETE ON entrada
+    FOR EACH ROW
+		UPDATE producto SET stock = stock - OLD.cantidad WHERE id = NEW.id_producto;
+
+CREATE TRIGGER eliminar_retiro
+	AFTER DELETE ON salida
+    FOR EACH ROW
+		UPDATE producto SET stock = stock + OLD.cantidad WHERE id = NEW.id_producto;
         
 INSERT INTO categoria (nombre) VALUES ("Electronica");
 INSERT INTO subcategoria (nombre, id_categoria) VALUES ("Laptop", 1);
