@@ -12,46 +12,48 @@ router.post("/login", (req, res) => {
   if (rut && pass) {
     return connect()
       .then((db) => {
-        return db.query(
-          `SELECT rut, email, nombres, apellidos, rol, estado, pass as password FROM usuario WHERE RUT = ${rut}`,
-          []
-        );
-      })
-      .then((result) => {
-        if (result.length > 0) {
-          const {
-            rut,
-            email,
-            nombres,
-            apellidos,
-            rol,
-            estado,
-            password,
-          } = result[0];
-          const user = { rut, email, nombres, apellidos, rol, estado };
-          if (bcrypt.compareSync(pass.trim(), password)) {
-            const token = jwt.sign(user, "LaPrivateKeyEstaAki", {
-              expiresIn: 60 * 60 * 22, // 22 hrs
-            });
-            return res.json({
-              status: 200,
-              message: "Usuario logeado correctamente",
-              data: { token, user },
-            });
-          } else {
-            return res.status(404).json({
-              status: 404,
-              message: "Rut / Contraseña incorrectos",
-              data: {},
-            });
-          }
-        } else {
-          return res.status(404).json({
-            code: 404,
-            message: "Rut / Contraseña incorrectos",
-            data: {},
+        return db
+          .query(
+            `SELECT rut, email, nombres, apellidos, rol, estado, pass as password FROM usuario WHERE RUT = ${rut}`,
+            []
+          )
+          .then((result) => {
+            db.destroy();
+            if (result.length > 0) {
+              const {
+                rut,
+                email,
+                nombres,
+                apellidos,
+                rol,
+                estado,
+                password,
+              } = result[0];
+              const user = { rut, email, nombres, apellidos, rol, estado };
+              if (bcrypt.compareSync(pass.trim(), password)) {
+                const token = jwt.sign(user, "LaPrivateKeyEstaAki", {
+                  expiresIn: 60 * 60 * 22, // 22 hrs
+                });
+                return res.json({
+                  status: 200,
+                  message: "Usuario logeado correctamente",
+                  data: { token, user },
+                });
+              } else {
+                return res.status(404).json({
+                  status: 404,
+                  message: "Rut / Contraseña incorrectos",
+                  data: {},
+                });
+              }
+            } else {
+              return res.status(404).json({
+                code: 404,
+                message: "Rut / Contraseña incorrectos",
+                data: {},
+              });
+            }
           });
-        }
       })
       .catch((e) => {
         console.error(e);
@@ -71,21 +73,23 @@ router.post("/singup", (req, res) => {
     const hash = bcrypt.hashSync(pass, 8);
     return connect()
       .then((db) => {
-        return db.query(
-          `INSERT INTO usuario VALUES (${rut}, '${email}', '${hash}', '${nombres}', '${apellidos}' , '${rol}', 'Activo' )`
-        );
-      })
-      .then((result) => {
-        if (result.affectedRows > 0) {
-          return res.json({
-            code: 200,
-            message: "Usuario registrado correctamente",
-            data: {},
+        return db
+          .query(
+            `INSERT INTO usuario VALUES (${rut}, '${email}', '${hash}', '${nombres}', '${apellidos}' , '${rol}', 'Activo' )`
+          )
+          .then((result) => {
+            db.destroy();
+            if (result.affectedRows > 0) {
+              return res.json({
+                code: 200,
+                message: "Usuario registrado correctamente",
+                data: {},
+              });
+            }
+            return res
+              .status(500)
+              .json({ code: 500, message: "Ocurrio un error", data: {} });
           });
-        }
-        return res
-          .status(500)
-          .json({ code: 500, message: "Ocurrio un error", data: {} });
       })
       .catch((e) => {
         console.error(e);

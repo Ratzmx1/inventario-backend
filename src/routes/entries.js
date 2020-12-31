@@ -5,28 +5,43 @@ const auth = require("../utils/auth");
 const router = express.Router();
 
 router.post("/input", auth, (req, res) => {
-  const { orden, cantidad, id_producto, id_proveedor, fecha } = req.body;
-  if (orden && cantidad && id_producto && id_proveedor && fecha) {
+  const { orden, cantidad, id_producto, id_proveedor } = req.body;
+  if (orden && cantidad && id_producto && id_proveedor) {
+    var fecha = new Date();
+    var stringfecha =
+      fecha.getFullYear() +
+      "," +
+      fecha.getMonth() +
+      "," +
+      fecha.getDay() +
+      " " +
+      fecha.getHours() +
+      ":" +
+      fecha.getMinutes() +
+      ":" +
+      fecha.getSeconds();
     return connect()
       .then((db) => {
-        return db.query(
-          `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha)
-          VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor}, '${fecha}')`
-        );
-      })
-      .then((result) => {
-        console.log(result);
-        if (result.affectedRows === 1) {
-          return res.json({
-            code: 200,
-            message: "Entrada registrada correctamente",
-            data: {},
+        return db
+          .query(
+            `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha)
+          VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s'))`
+          )
+          .then((result) => {
+            db.destroy();
+            if (result.affectedRows === 1) {
+              return res.json({
+                code: 200,
+                message: "Entrada registrada correctamente",
+                data: {},
+              });
+            }
+            return res
+              .status(500)
+              .json({ code: 500, message: "Ocurrio un error", data: {} });
           });
-        }
-        return res
-          .status(500)
-          .json({ code: 500, message: "Ocurrio un error", data: {} });
       })
+
       .catch((e) => {
         console.error(e);
         return res.status(500).json({
@@ -41,27 +56,29 @@ router.post("/input", auth, (req, res) => {
 router.get("/view", auth, (req, res) => {
   return connect()
     .then((db) => {
-      return db.query(
-        `SELECT e.*, prod.nombre AS "nombre_prod", prov.nombre AS "nombre_prov", u.nombres AS "nombre_user"
+      return db
+        .query(
+          `SELECT e.*, prod.nombre AS "nombre_prod", prov.nombre AS "nombre_prov", u.nombres AS "nombre_user"
         FROM entrada AS e
         INNER JOIN producto AS prod ON e.id_producto = prod.id
         INNER JOIN proveedor AS prov ON e.id_proveedor = prov.id
         INNER JOIN usuario AS u ON e.id_usuario = u.rut;`
-      );
-    })
-    .then((result) => {
-      console.log(result);
-      if (result.length > 0) {
-        return res.json({
-          code: 200,
-          message: "Lista de entradas mostrada exitosamente",
-          data: { result },
+        )
+        .then((result) => {
+          db.destroy();
+          if (result.length > 0) {
+            return res.json({
+              code: 200,
+              message: "Lista de entradas mostrada exitosamente",
+              data: { result },
+            });
+          }
+          return res
+            .status(500)
+            .json({ code: 500, message: "Ocurrio un error", data: {} });
         });
-      }
-      return res
-        .status(500)
-        .json({ code: 500, message: "Ocurrio un error", data: {} });
     })
+
     .catch((e) => {
       console.error(e);
       return res.status(500).json({
@@ -77,23 +94,25 @@ router.post("/ActualizarInput", auth, (req, res) => {
   if (id && orden && cantidad && id_producto && id_proveedor) {
     return connect()
       .then((db) => {
-        return db.query(
-          `UPDATE entrada SET orden= ${orden}, cantidad = ${cantidad}, id_producto= ${id_producto}, id_proveedor= ${id_proveedor} where id = ${id}`
-        );
-      })
-      .then((result) => {
-        console.log(result);
-        if (result.affectedRows === 1) {
-          return res.json({
-            code: 200,
-            message: "Entrada actualizada correctamente",
-            data: {},
+        return db
+          .query(
+            `UPDATE entrada SET orden = ${orden}, cantidad = ${cantidad}, id_producto = ${id_producto}, id_proveedor = ${id_proveedor} where id = ${id}`
+          )
+          .then((result) => {
+            db.destroy();
+            if (result.affectedRows === 1) {
+              return res.json({
+                code: 200,
+                message: "Entrada actualizada correctamente",
+                data: {},
+              });
+            }
+            return res
+              .status(500)
+              .json({ code: 500, message: "Ocurrio un error", data: {} });
           });
-        }
-        return res
-          .status(500)
-          .json({ code: 500, message: "Ocurrio un error", data: {} });
       })
+
       .catch((e) => {
         console.error(e);
         return res.status(500).json({

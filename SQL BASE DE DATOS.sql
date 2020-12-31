@@ -46,7 +46,7 @@ orden int,
 cantidad int,
 id_producto int NOT NULL,
 id_proveedor int NOT NULL,
-fecha varchar(40),
+fecha date,
 CHECK (cantidad>=0)
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE salida
 id int AUTO_INCREMENT NOT NULL UNIQUE,
 id_usuario int NOT NULL,
 id_producto int NOT NULL,
-fecha varchar(40),
+fecha date,
 cantidad int,
 CHECK (cantidad>=0)
 );
