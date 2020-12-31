@@ -11,7 +11,7 @@ const categoriesRouter = require("./src/routes/categorias");
 const subcategoriesRouter = require("./src/routes/subcategorias");
 
 const app = express();
-const port = 3005;
+const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 app.use(cors());
