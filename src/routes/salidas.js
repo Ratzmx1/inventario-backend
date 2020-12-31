@@ -53,74 +53,73 @@ router.post("/sacar_producto", auth, (req, res) => {
       .status(400)
       .json({ mensaje: "La cantidad es inferior a 0", data: null });
   }
-  return connect()
-    .then((db) => {
-      return db
-        .query(`SELECT id,stock FROM producto WHERE id=${id_producto}`)
-        .then((resultados) => {
-          db.destroy();
-          if (resultados.length > 0) {
-            if (resultados[0].stock >= cantidad) {
-              var fecha = new Date();
-              var stringfecha =
-                fecha.getFullYear() +
-                "," +
-                fecha.getMonth() +
-                "," +
-                fecha.getDay() +
-                " " +
-                fecha.getHours() +
-                ":" +
-                fecha.getMinutes() +
-                ":" +
-                fecha.getSeconds();
-              return connect()
-                .then((db) => {
-                  db.query(
-                    `INSERT INTO salida(id_usuario,id_producto,cantidad,fecha) VALUES(${rut},${id_producto},${cantidad}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s') )`
-                  ).then(() => {
-                    db.destroy();
-                  });
-                  return res.status(200).json({
-                    mensaje: "Productos extraidos exitosamente",
-                    data: {
-                      id_producto: id_producto,
-                      cantidad: resultados[0].stock - cantidad,
-                    },
-                  });
-                })
-                .catch((e) => {
-                  return res.status(500).json({
-                    mensaje: "Ha ocurrido un error en la inserción",
-                    data: null,
-                    error: e.message,
-                  });
+  return connect().then((db) => {
+    return db
+      .query(`SELECT id,stock FROM producto WHERE id=${id_producto}`)
+      .then((resultados) => {
+        db.destroy();
+        if (resultados.length > 0) {
+          if (resultados[0].stock >= cantidad) {
+            var fecha = new Date();
+            var stringfecha =
+              fecha.getFullYear() +
+              "," +
+              fecha.getMonth() +
+              "," +
+              fecha.getDay() +
+              " " +
+              fecha.getHours() +
+              ":" +
+              fecha.getMinutes() +
+              ":" +
+              fecha.getSeconds();
+            return connect()
+              .then((db) => {
+                db.query(
+                  `INSERT INTO salida(id_usuario,id_producto,cantidad,fecha) VALUES(${rut},${id_producto},${cantidad}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s') )`
+                ).then(() => {
+                  db.destroy();
                 });
-            } else {
-              return res.status(404).json({
-                mensaje: "Cantidad del producto en bodega es insuficiente",
-                data: null,
+                return res.status(200).json({
+                  mensaje: "Productos extraidos exitosamente",
+                  data: {
+                    id_producto: id_producto,
+                    cantidad: resultados[0].stock - cantidad,
+                  },
+                });
+              })
+              .catch((e) => {
+                db.destroy();
+                return res.status(500).json({
+                  mensaje: "Ha ocurrido un error en la inserción",
+                  data: null,
+                  error: e.message,
+                });
               });
-            }
-
-            console.log(resultados[0].stock);
           } else {
-            return res
-              .status(404)
-              .json({ mensaje: "Producto no existe", data: null });
+            return res.status(404).json({
+              mensaje: "Cantidad del producto en bodega es insuficiente",
+              data: null,
+            });
           }
-          return res.status(200).json({ mensaje: "asdas" });
-        });
-    })
 
-    .catch((e) => {
-      console.error(e);
-      return res.status(500).json({
-        code: 500,
-        message: e.message,
-        data: {},
+          console.log(resultados[0].stock);
+        } else {
+          return res
+            .status(404)
+            .json({ mensaje: "Producto no existe", data: null });
+        }
+        return res.status(200).json({ mensaje: "asdas" });
+      })
+      .catch((e) => {
+        console.error(e);
+        return res.status(500).json({
+          code: 500,
+          message: e.message,
+          data: {},
+        });
       });
-    });
+  });
 });
 
 module.exports = router;

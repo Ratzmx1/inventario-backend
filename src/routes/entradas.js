@@ -54,66 +54,31 @@ router.post("/input", auth, (req, res) => {
 });
 
 router.get("/view", auth, (req, res) => {
-  return connect()
-    .then((db) => {
-      return db
-        .query(
-          `SELECT e.*, prod.nombre AS "nombre_prod", prov.nombre AS "nombre_prov", u.nombres AS "nombre_user"
+  return connect().then((db) => {
+    return db
+      .query(
+        `SELECT e.*, prod.nombre AS "nombre_prod", prov.nombre AS "nombre_prov", u.nombres AS "nombre_user"
         FROM entrada AS e
         INNER JOIN producto AS prod ON e.id_producto = prod.id
         INNER JOIN proveedor AS prov ON e.id_proveedor = prov.id
         INNER JOIN usuario AS u ON e.id_usuario = u.rut;`
-        )
-        .then((result) => {
-          db.destroy();
-          if (result.length > 0) {
-            return res.json({
-              code: 200,
-              message: "Lista de entradas mostrada exitosamente",
-              data: { result },
-            });
-          }
-          return res
-            .status(500)
-            .json({ code: 500, message: "Ocurrio un error", data: {} });
-        });
-    })
+      )
+      .then((result) => {
+        db.destroy();
 
-    .catch((e) => {
-      console.error(e);
-      return res.status(500).json({
-        code: 500,
-        message: e.message,
-        data: {},
-      });
-    });
-});
-
-router.post("/ActualizarInput", auth, (req, res) => {
-  const { id, orden, cantidad, id_producto, id_proveedor } = req.body;
-  if (id && orden && cantidad && id_producto && id_proveedor) {
-    return connect()
-      .then((db) => {
-        return db
-          .query(
-            `UPDATE entrada SET orden = ${orden}, cantidad = ${cantidad}, id_producto = ${id_producto}, id_proveedor = ${id_proveedor} where id = ${id}`
-          )
-          .then((result) => {
-            db.destroy();
-            if (result.affectedRows === 1) {
-              return res.json({
-                code: 200,
-                message: "Entrada actualizada correctamente",
-                data: {},
-              });
-            }
-            return res
-              .status(500)
-              .json({ code: 500, message: "Ocurrio un error", data: {} });
+        if (result.length > 0) {
+          return res.json({
+            code: 200,
+            message: "Lista de entradas mostrada exitosamente",
+            data: { result },
           });
+        }
+        return res
+          .status(500)
+          .json({ code: 500, message: "Ocurrio un error", data: {} });
       })
-
       .catch((e) => {
+        db.destroy();
         console.error(e);
         return res.status(500).json({
           code: 500,
@@ -121,38 +86,72 @@ router.post("/ActualizarInput", auth, (req, res) => {
           data: {},
         });
       });
+  });
+});
+
+router.post("/ActualizarInput", auth, (req, res) => {
+  const { id, orden, cantidad, id_producto, id_proveedor } = req.body;
+  if (id && orden && cantidad && id_producto && id_proveedor) {
+    return connect().then((db) => {
+      return db
+        .query(
+          `UPDATE entrada SET orden = ${orden}, cantidad = ${cantidad}, id_producto = ${id_producto}, id_proveedor = ${id_proveedor} where id = ${id}`
+        )
+        .then((result) => {
+          db.destroy();
+          if (result.affectedRows === 1) {
+            return res.json({
+              code: 200,
+              message: "Entrada actualizada correctamente",
+              data: {},
+            });
+          }
+          return res
+            .status(500)
+            .json({ code: 500, message: "Ocurrio un error", data: {} });
+        })
+        .catch((e) => {
+          db.destroy();
+          console.error(e);
+          return res.status(500).json({
+            code: 500,
+            message: e.message,
+            data: {},
+          });
+        });
+    });
   }
 });
 
 router.post("/EliminarInput", auth, (req, res) => {
   const { id } = req.body;
   if (id) {
-    return connect()
-      .then((db) => {
-        return db
-          .query(`DELETE FROM entrada where id= ${id}`)
-          .then((result) => {
-            db.destroy();
-            if (result.affectedRows === 1) {
-              return res.json({
-                code: 200,
-                message: "Entrada eliminada correctamente",
-                data: {},
-              });
-            }
-            return res
-              .status(500)
-              .json({ code: 500, message: "Ocurrio un error", data: {} });
+    return connect().then((db) => {
+      return db
+        .query(`DELETE FROM entrada where id= ${id}`)
+        .then((result) => {
+          db.destroy();
+          if (result.affectedRows === 1) {
+            return res.json({
+              code: 200,
+              message: "Entrada eliminada correctamente",
+              data: {},
+            });
+          }
+          return res
+            .status(500)
+            .json({ code: 500, message: "Ocurrio un error", data: {} });
+        })
+        .catch((e) => {
+          db.destroy();
+          console.error(e);
+          return res.status(500).json({
+            code: 500,
+            message: e.message,
+            data: {},
           });
-      })
-      .catch((e) => {
-        console.error(e);
-        return res.status(500).json({
-          code: 500,
-          message: e.message,
-          data: {},
         });
-      });
+    });
   }
 });
 
