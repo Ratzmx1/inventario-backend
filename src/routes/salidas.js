@@ -78,7 +78,9 @@ router.post("/sacar_producto", auth, (req, res) => {
                 .then((db) => {
                   db.query(
                     `INSERT INTO salida(id_usuario,id_producto,cantidad,fecha) VALUES(${rut},${id_producto},${cantidad}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s') )`
-                  ).then(() => db.destroy());
+                  ).then(() => {
+                    db.destroy();
+                  });
                   return res.status(200).json({
                     mensaje: "Productos extraidos exitosamente",
                     data: {

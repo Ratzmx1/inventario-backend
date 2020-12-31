@@ -129,20 +129,21 @@ router.post("/EliminarInput", auth, (req, res) => {
   if (id) {
     return connect()
       .then((db) => {
-        return db.query(`DELETE FROM entrada where id= ${id}`);
-      })
-      .then((result) => {
-        console.log(result);
-        if (result.affectedRows === 1) {
-          return res.json({
-            code: 200,
-            message: "Entrada eliminada correctamente",
-            data: {},
+        return db
+          .query(`DELETE FROM entrada where id= ${id}`)
+          .then((result) => {
+            db.destroy();
+            if (result.affectedRows === 1) {
+              return res.json({
+                code: 200,
+                message: "Entrada eliminada correctamente",
+                data: {},
+              });
+            }
+            return res
+              .status(500)
+              .json({ code: 500, message: "Ocurrio un error", data: {} });
           });
-        }
-        return res
-          .status(500)
-          .json({ code: 500, message: "Ocurrio un error", data: {} });
       })
       .catch((e) => {
         console.error(e);
