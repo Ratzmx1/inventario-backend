@@ -20,36 +20,35 @@ router.post("/input", auth, (req, res) => {
       fecha.getMinutes() +
       ":" +
       fecha.getSeconds();
-    return connect()
-      .then((db) => {
-        return db
-          .query(
-            `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha)
+    return connect().then((db) => {
+      return db
+        .query(
+          `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha)
           VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s'))`
-          )
-          .then((result) => {
-            db.destroy();
-            if (result.affectedRows === 1) {
-              return res.json({
-                code: 200,
-                message: "Entrada registrada correctamente",
-                data: {},
-              });
-            }
-            return res
-              .status(500)
-              .json({ code: 500, message: "Ocurrio un error", data: {} });
+        )
+        .then((result) => {
+          db.destroy();
+          if (result.affectedRows === 1) {
+            return res.json({
+              code: 200,
+              message: "Entrada registrada correctamente",
+              data: {},
+            });
+          }
+          return res
+            .status(500)
+            .json({ code: 500, message: "Ocurrio un error", data: {} });
+        })
+        .catch((e) => {
+          db.destroy();
+          console.error(e);
+          return res.status(500).json({
+            code: 500,
+            message: e.message,
+            data: {},
           });
-      })
-
-      .catch((e) => {
-        console.error(e);
-        return res.status(500).json({
-          code: 500,
-          message: e.message,
-          data: {},
         });
-      });
+    });
   }
 });
 

@@ -5,35 +5,35 @@ const auth = require("../utils/auth");
 const router = express.Router();
 
 router.get("/productos_salida", auth, (req, res) => {
-  return connect()
-    .then((basedato) => {
-      return basedato
-        .query(
-          `SELECT s.id, s.cantidad, s.fecha, p.nombre, u.rut, u.nombres, u.apellidos
+  return connect().then((basedato) => {
+    return basedato
+      .query(
+        `SELECT s.id, s.cantidad, s.fecha, p.nombre, u.rut, u.nombres, u.apellidos
       FROM  salida s inner join producto p on s.id_producto = p.id inner join usuario u on s.id_usuario = u.rut`,
-          []
-        )
-        .then((resultados) => {
-          basedato.destroy();
-          if (resultados.length > 0) {
-            return res.status(200).json({
-              status: 200,
-              data: resultados,
-              message: "El producto a salido exitosamente",
-            });
-          }
-          return res
-            .status(404)
-            .json({ status: 404, data: [], message: "No hay productos" });
+        []
+      )
+      .then((resultados) => {
+        basedato.destroy();
+        if (resultados.length > 0) {
+          return res.status(200).json({
+            status: 200,
+            data: resultados,
+            message: "El producto a salido exitosamente",
+          });
+        }
+        return res
+          .status(404)
+          .json({ status: 404, data: [], message: "No hay productos" });
+      })
+      .catch((error) => {
+        basedato.destroy();
+        return res.status(500).json({
+          status: 500,
+          message: "Error del servidor, intentelo más tarde",
+          data: { error: error.message },
         });
-    })
-    .catch((error) => {
-      return res.status(500).json({
-        status: 500,
-        message: "Error del servidor, intentelo más tarde",
-        data: { error: error.message },
       });
-    });
+  });
 
   return res.status(400).json({
     status: 400,
@@ -112,6 +112,7 @@ router.post("/sacar_producto", auth, (req, res) => {
         return res.status(200).json({ mensaje: "asdas" });
       })
       .catch((e) => {
+        db.destroy();
         console.error(e);
         return res.status(500).json({
           code: 500,
