@@ -2,13 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const userRouter = require("./src/routes/user");
-const categoriesRouter = require("./src/routes/categories");
-const entriesRouter = require("./src/routes/entries");
-const productsRouter = require("./src/routes/products");
-const providersRouter = require("./src/routes/providers");
-const subcategoriesRouter = require("./src/routes/subcategories");
-const outsRouter = require("./src/routes/outs");
+const outsRouter = require("./src/routes/salidas");
+const userRouter = require("./src/routes/usuarios");
+const entriesRouter = require("./src/routes/entradas");
+const productsRouter = require("./src/routes/productos");
+const providersRouter = require("./src/routes/proveedores");
+const categoriesRouter = require("./src/routes/categorias");
+const subcategoriesRouter = require("./src/routes/subcategorias");
 
 const app = express();
 const port = 3005;
