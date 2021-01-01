@@ -68,7 +68,7 @@ router.post("/sacar_producto", auth, (req, res) => {
               "," +
               fecha.getDate() +
               " " +
-              fecha.getHours() +
+              (fecha.getHours() - 3) +
               ":" +
               fecha.getMinutes() +
               ":" +
