@@ -8,12 +8,12 @@ router.post("/input", auth, (req, res) => {
   const { orden, cantidad, id_producto, id_proveedor } = req.body;
   if (orden && cantidad && id_producto && id_proveedor) {
     var fecha = new Date();
-    var stringfecha =
+    var stringFecha =
       fecha.getFullYear() +
       "," +
-      fecha.getMonth() +
+      (fecha.getMonth() + 1) +
       "," +
-      fecha.getDay() +
+      fecha.getDate() +
       " " +
       fecha.getHours() +
       ":" +
@@ -24,7 +24,7 @@ router.post("/input", auth, (req, res) => {
       return db
         .query(
           `INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha)
-          VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s'))`
+          VALUES (${req.user.rut}, ${orden}, ${cantidad}, ${id_producto}, ${id_proveedor}, DATE_FORMAT('${stringFecha}','%d/%m/%Y %H:%i:%s'))`
         )
         .then((result) => {
           db.destroy();
@@ -107,7 +107,7 @@ router.post("/ActualizarInput", auth, (req, res) => {
           }
           return res
             .status(500)
-            .json({ code: 500, message: "Ocurrio un error", data: {} });
+            .json({ code: 500, message: "Ocurrió un error", data: {} });
         })
         .catch((e) => {
           db.destroy();

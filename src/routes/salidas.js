@@ -61,12 +61,12 @@ router.post("/sacar_producto", auth, (req, res) => {
         if (resultados.length > 0) {
           if (resultados[0].stock >= cantidad) {
             var fecha = new Date();
-            var stringfecha =
+            var stringFecha =
               fecha.getFullYear() +
               "," +
-              fecha.getMonth() +
+              (fecha.getMonth() + 1) +
               "," +
-              fecha.getDay() +
+              fecha.getDate() +
               " " +
               fecha.getHours() +
               ":" +
@@ -76,7 +76,7 @@ router.post("/sacar_producto", auth, (req, res) => {
             return connect()
               .then((db) => {
                 db.query(
-                  `INSERT INTO salida(id_usuario,id_producto,cantidad,fecha) VALUES(${rut},${id_producto},${cantidad}, DATE_FORMAT('${stringfecha}','%d/%m/%Y %H:%i:%s') )`
+                  `INSERT INTO salida(id_usuario,id_producto,cantidad,fecha) VALUES(${rut},${id_producto},${cantidad}, DATE_FORMAT('${stringFecha}','%d/%m/%Y %H:%i:%s') )`
                 ).then(() => {
                   db.destroy();
                 });
