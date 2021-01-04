@@ -46,7 +46,7 @@ orden int,
 cantidad int,
 id_producto int NOT NULL,
 id_proveedor int NOT NULL,
-fecha date,
+fecha varchar(40),
 CHECK (cantidad>=0)
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE salida
 id int AUTO_INCREMENT NOT NULL UNIQUE,
 id_usuario int NOT NULL,
 id_producto int NOT NULL,
-fecha date,
+fecha varchar(40),
 cantidad int,
 CHECK (cantidad>=0)
 );
@@ -140,8 +140,5 @@ CREATE TRIGGER eliminar_retiro
 INSERT INTO categoria (nombre) VALUES ("Electronica");
 INSERT INTO subcategoria (nombre, id_categoria) VALUES ("Laptop", 1);
 INSERT INTO subcategoria (nombre, id_categoria) VALUES ("Smartphone", 1);
-INSERT INTO producto (nombre, id_sub_cat, stock, marca, stock_min) VALUES ("Gato cojo", 1, 0, "chayomi", 10);
-INSERT INTO producto (nombre, id_sub_cat, stock, marca, stock_min) VALUES ("Gato gordo", 2, 0, "apel", 15);
-INSERT INTO proveedor (nombre, direccion, telefono) VALUES ("Martuco", "Talca", 6969420);
-INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha) VALUES (1, 16, 69, 1, 1, "30/12/2020");
-INSERT INTO entrada (id_usuario, orden, cantidad, id_producto, id_proveedor, fecha) VALUES (2, 32, 420, 2, 1, "30/12/2020");
+INSERT INTO proveedor (nombre, direccion, telefono) VALUES ("Apple", "Talca", 6969420);
+
