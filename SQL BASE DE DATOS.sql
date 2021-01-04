@@ -112,7 +112,7 @@ CREATE TRIGGER cambio_ingreso
     AFTER UPDATE ON entrada
     FOR EACH ROW
     BEGIN
-	UPDATE producto SET stock = stock - OLD.cantidad WHERE id = NEW.id_producto;
+	UPDATE producto SET stock = stock - OLD.cantidad WHERE id = OLD.id_producto;
         UPDATE producto SET stock = stock + NEW.cantidad WHERE id = NEW.id_producto;
     END//
 
@@ -121,7 +121,7 @@ CREATE TRIGGER cambio_retiro
     AFTER UPDATE ON salida
     FOR EACH ROW
     BEGIN
-	UPDATE producto SET stock = stock + OLD.cantidad WHERE id = NEW.id_producto;
+	UPDATE producto SET stock = stock + OLD.cantidad WHERE id = OLD.id_producto;
 	UPDATE producto SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
     END//
     
